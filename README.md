@@ -8,6 +8,10 @@ Conversor de CSV em Array.
 $file = "myfile.csv"
 $reader = Sheet($file);
 $reader->setDelimiter(","); // Por padrão é ";"
-$reader->readFile();
+
+$reader->getArray(); // Retorna o CSV convertido em array
+Ou
+$reader->getSQLInsert("nomeDaTabela"); // Retorna uma query sql
+
 ```
 Vai retornar um Array com os dados do CSV. 
