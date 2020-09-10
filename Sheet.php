@@ -5,6 +5,7 @@ class Sheet
 
     private $file;
     private $delimiter = ";";
+    private $CSVArray = [];
 
     function __construct( string $file )
     {   
@@ -14,9 +15,10 @@ class Sheet
     public function setDelimiter($delimiter)
     {  
         $this->delimiter = $delimiter;
+        return $this;
     }
 
-    public function readFile()
+    private function readFile()
     {
         $this->file = fopen($this->file, 'r');
         if ( $this->file ) {
@@ -27,10 +29,42 @@ class Sheet
                     continue;
                 }
                 $register = array_combine($header, $row);
-                echo $register['nome']." - ".$register['numero'].PHP_EOL;
+                
+                $newData = [];
+                foreach($header as $key) {
+                    $newData[$key] = $register[$key];
+                }
+                $this->CSVArray[] = $newData;
             }
             fclose($this->file);
         }
+    }
+
+    public function getArray()
+    {
+        $this->readFile();
+        return $this->CSVArray;
+    }
+
+    public function getSQLInsert($table)
+    {
+        
+        if ( count($this->CSVArray)  <= 0) {
+            $this->readFile();
+        }
+
+        $columns = array_keys($this->CSVArray[0]);
+        $columns = "(".implode(", ", $columns).")";
+        $values = "";
+        foreach($this->CSVArray as $key => $register) {
+            $values .= "(\"".implode("\", \"", array_values($register))."\")";
+            if ($key < count($this->CSVArray) - 1) {
+                $values .= ", ";
+            }
+        }
+        $query = "INSERT INTO {$table} {$columns} VALUES {$values}";
+        str_replace("'", "\'", $query);
+        return $query;
     }
     
 }

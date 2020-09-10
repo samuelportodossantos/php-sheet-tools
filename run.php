@@ -2,9 +2,15 @@
 
 include 'Sheet.php';
 
-$file = "../sheet.csv";
+$file = "../teste2.csv";
+
+// $sheet = new Sheet($file);
+// $sheet->setDelimiter(",");
+// $sheet->readFile();
 
 $sheet = new Sheet($file);
-//$sheet->setDelimiter(",");
-$sheet->readFile();
 
+
+// print_r($sheet->getArray());
+
+// print $sheet->getSQLInsert("teste");
